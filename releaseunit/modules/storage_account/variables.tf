@@ -36,3 +36,7 @@ variable "diagnostic_profiles" {
 variable "diagnostics" {
   default = {}
 }
+
+variable "vnet" {
+  default = {}
+}

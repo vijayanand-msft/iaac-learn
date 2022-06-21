@@ -3,7 +3,13 @@ locals {
   tags = lookup(var.storage_account, "tags", null) == null ? null : lookup(var.storage_account.tags, "environment", null) == null ? var.storage_account.tags : merge(lookup(var.storage_account, "tags", {}), { "environment" : var.global_settings.environment })
 }
 
+data "azurerm_subnet" "stsnet" { 
+  
+  resource_group_name =var.vnet.resource_group_name
+  name = var.vnet.subnet_name
+  virtual_network_name = var.vnet.virtual_network_name
 
+}
 # Tested with :  AzureRM version 2.61.0
 # Ref : https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
 
@@ -18,7 +24,7 @@ resource "azurerm_storage_account" "stg" {
   enable_https_traffic_only = try(var.storage_account.nfsv3_enabled, false) ? false : true
   #if using nfsv3_enabled, then https must be disabled
   min_tls_version          = try(var.storage_account.min_tls_version, "TLS1_2")
-  //allow_blob_public_access = try(var.storage_account.allow_blob_public_access, false)
+ // allow_blob_public_access = try(var.storage_account.allow_blob_public_access, false)
   is_hns_enabled           = try(var.storage_account.is_hns_enabled, false)
   nfsv3_enabled            = try(var.storage_account.nfsv3_enabled, false)
   large_file_share_enabled = try(var.storage_account.large_file_share_enabled, null)
@@ -142,15 +148,14 @@ resource "azurerm_storage_account" "stg" {
     }
   }
 
+
   dynamic "network_rules" {
     for_each = lookup(var.storage_account, "network", null) == null ? [] : [1]
     content {
       bypass         = try(var.storage_account.network.bypass, [])
       default_action = try(var.storage_account.network.default_action, "Deny")
       ip_rules       = try(var.storage_account.network.ip_rules, [])
-      virtual_network_subnet_ids = try(var.storage_account.network.subnets, null) == null ? null : [
-        for key, value in var.storage_account.network.subnets : can(value.remote_subnet_id) ? value.remote_subnet_id : var.vnets[try(value.lz_key, var.client_config.landingzone_key)][value.vnet_key].subnets[value.subnet_key].id
-      ]
+      virtual_network_subnet_ids = [ data.azurerm_subnet.stsnet.id]
     }
   }
 

@@ -1,4 +1,4 @@
-#variable "resource_id" {}
+variable "resource_id" {}
 
 variable "name" {
   type        = string

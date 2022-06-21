@@ -1,16 +1,7 @@
 
-resource "azurecaf_name" "pep" {
-  name          = var.name
-  resource_type = "azurerm_private_endpoint"
-  prefixes      = var.global_settings.prefixes
-  random_length = var.global_settings.random_length
-  clean_input   = true
-  passthrough   = var.global_settings.passthrough
-  use_slug      = var.global_settings.use_slug
-}
 
 resource "azurerm_private_endpoint" "pep" {
-  name                = azurecaf_name.pep.result
+  name                = var.name
   location            = try(local.location, var.location)
   resource_group_name = try(local.resource_group.name, var.resource_group_name)
   subnet_id           = var.subnet_id

@@ -115,4 +115,11 @@ variable "vnet_address_space" {
   default = ""
 }
 
+variable "vnet" {
+  default = {}
+}
 
+variable "storage_account_containers" {
+  default = {}
+}
+  
