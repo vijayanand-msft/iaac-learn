@@ -37,6 +37,9 @@ storage_accounts = {
         name = "random"
       }
     }*/
+      enable_system_msi = {
+      type = "SystemAssigned"
+    }
     private_endpoints = {
       stpe = {
         name = "pe-st-uks-01"
@@ -74,6 +77,7 @@ vnet = {
   resource_group_name = "rg-vnet-uksouth-01"
   virtual_network_name = "vnet-uksouth-01"
 }
+
 
 storage_account_containers = {
   containers = {

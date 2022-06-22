@@ -122,4 +122,3 @@ variable "vnet" {
 variable "storage_account_containers" {
   default = {}
 }
-  

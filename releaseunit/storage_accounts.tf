@@ -20,14 +20,8 @@ module "storage_accounts" {
   location          = local.global_settings.regions[each.value.region]
 }
 
-resource "time_sleep" "wait_30_seconds" {
-  depends_on = [module.storage_accounts]
-
-  create_duration = "30s"
-}
-
 module "storage_account_container" {
-  depends_on = [time_sleep.wait_30_seconds,module.storage_accounts]
+  depends_on = [module.storage_accounts]
   source="./modules/storage_account/container"
   for_each = try(var.storage_account_containers.containers, {})
 
